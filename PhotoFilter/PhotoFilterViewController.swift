@@ -10,6 +10,7 @@ class PhotoFilterViewController: UIViewController {
 	@IBOutlet weak var contrastSlider: UISlider!
 	@IBOutlet weak var saturationSlider: UISlider!
 	@IBOutlet weak var imageView: UIImageView!
+    @IBOutlet weak var blurSlider: UISlider!
     
     //MARK: - Properties
     var origionalImage: UIImage? {
@@ -45,6 +46,7 @@ class PhotoFilterViewController: UIViewController {
     
     private let context = CIContext()
     private let colorControlsfilter = CIFilter.colorControls()
+    private let blurFilter = CIFilter.gaussianBlur()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
@@ -59,6 +61,9 @@ class PhotoFilterViewController: UIViewController {
         colorControlsfilter.saturation = saturationSlider.value
         colorControlsfilter.contrast = contrastSlider.value
         colorControlsfilter.brightness = brightnessSlider.value
+        
+        blurFilter.inputImage = colorControlsfilter.outputImage
+        blurFilter.radius = blurSlider.value
         
         guard let outputImage = colorControlsfilter.outputImage else { return nil }
         guard let renderCGImage = context.createCGImage(outputImage, from: outputImage.extent) else { return nil }
@@ -130,6 +135,10 @@ class PhotoFilterViewController: UIViewController {
 	@IBAction func saturationChanged(_ sender: Any) {
         updateImage()
 	}
+    
+    @IBAction func blurChanged(_ sender: Any) {
+        updateImage()
+    }
 }
 
 extension PhotoFilterViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
