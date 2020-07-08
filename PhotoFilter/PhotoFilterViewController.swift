@@ -19,17 +19,25 @@ class PhotoFilterViewController: UIViewController {
                 return
             }
             
-            var scaledSize = imageView.bounds.size
             let scale = UIScreen.main.scale
+            
+//            let scale: CGFloat = 0.5
+//            Can use 0.5 to increase the quickness of the slider on the sim when testing.
+//            But use UISCreen.main.scale for finished project
+            
+            var scaledSize = imageView.bounds.size
             scaledSize = CGSize(width: scaledSize.width * scale,
                                 height: scaledSize.height * scale)
-            let scaledUIImage = origionalImage.imageByScaling(toSize: scaledSize)
+            guard let scaledUIImage = origionalImage.imageByScaling(toSize: scaledSize) else {
+                scaledImage = nil
+                return
+            }
             
-            scaledImage = scaledUIImage
+            scaledImage = CIImage(image: scaledUIImage)
         }
     }
     
-    var scaledImage: UIImage? {
+    var scaledImage: CIImage? {
         didSet {
             updateImage()
         }
@@ -46,15 +54,14 @@ class PhotoFilterViewController: UIViewController {
 	}
     
     //MARK: - Methods
-    private func image(byFiltering image: UIImage) -> UIImage {
-        let inputImage = CIImage(image: image)
+    private func image(byFiltering inputImage: CIImage) -> UIImage? {
         filter.inputImage = inputImage
         filter.saturation = saturationSlider.value
         filter.contrast = contrastSlider.value
         filter.brightness = brightnessSlider.value
         
-        guard let outputImage = filter.outputImage else { return image }
-        guard let renderCGImage = context.createCGImage(outputImage, from: outputImage.extent) else { return image }
+        guard let outputImage = filter.outputImage else { return nil }
+        guard let renderCGImage = context.createCGImage(outputImage, from: outputImage.extent) else { return nil }
         
         return UIImage(cgImage: renderCGImage)
     }
