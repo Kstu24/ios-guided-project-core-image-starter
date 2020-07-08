@@ -45,6 +45,8 @@
 	<string>Main</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>You&apos;re photos are safe with me bro   😉</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Gimme the access code!! I need your pics</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
